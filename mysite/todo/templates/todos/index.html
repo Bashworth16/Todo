@@ -1,0 +1,13 @@
+<h1>To-Do List</h1>
+
+<ol>
+{% for task in List %}
+    <li> {{ task }} <button type="button" class="deletebtn"> Complete Task </button> </li>
+{% endfor %}
+</ol>
+
+<form action="add" method="POST">{% csrf_token %}
+    <input type="text" name="add_task"/>
+    <input type="submit" value="Add Task"/>
+</form>
+

@@ -22,4 +22,4 @@ def add_task(request):
 
 def remove_task(request, task_id):
     Todo.objects.filter(id=task_id).delete()
-    render(request, 'todos/remove.html')
+    return render(request, 'todos/remove.html')

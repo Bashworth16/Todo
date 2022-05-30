@@ -4,7 +4,7 @@
 <ol>
 {% for task in List %}
     <li id={{task.id}}> {{ task }}
-        <button onclick="location.href='http://127.0.0.1:8000/remove' {{task.id}}>;"> Complete Task </button> </li>
+        <button onclick="location.href='http://127.0.0.1:8000/remove/{{task.id}}/';"> Complete Task </button> </li>
 {% endfor %}
 </ol>
 

@@ -1,8 +1,10 @@
 <h1>To-Do List</h1>
 
+
 <ol>
 {% for task in List %}
-    <li> {{ task }} <button type="button" class="deletebtn"> Complete Task </button> </li>
+    <li id={{task.id}}> {{ task }}
+        <button onclick="location.href='http://127.0.0.1:8000/remove' {{task.id}}>;"> Complete Task </button> </li>
 {% endfor %}
 </ol>
 

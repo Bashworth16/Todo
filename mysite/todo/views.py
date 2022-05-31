@@ -24,6 +24,20 @@ def search(request):
     return render(request, 'todos/results.html', context)
 
 
+def search_id(request):
+    search = request.POST.get('search_id')
+    results = ''
+    for jobs in Todo.objects.all():
+        if search == jobs.id:
+            results = jobs.task
+        else:
+            pass
+    context = {
+        'results': results
+    }
+    return render(request, 'todos/idresults.html', context)
+
+
 def add_task(request):
     if request.method == 'POST':
         new_task = Todo()

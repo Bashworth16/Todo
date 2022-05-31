@@ -3,13 +3,20 @@
 
 <ol>
 {% for task in List %}
-    <li id={{task.id}}> {{ task }}
-        <button onclick="location.href='http://127.0.0.1:8000/remove/{{task.id}}/';"> Complete Task </button> </li>
+    <li id={{task.id}}>{{ task }}
+        <button onclick="location.href='http://127.0.0.1:8000/remove/{{task.id}}/';">
+            Complete Task </button>
+        <button onclick="location.href='http://127.0.0.1:8000/update1/{{task.id}}/';">
+            Update </button></li>
 {% endfor %}
 </ol>
 
 <form action="add" method="POST">{% csrf_token %}
-    <input type="text" name="add_task"/>
     <input type="submit" value="Add Task"/>
+    <input type="text" name="add_task"/>
 </form>
 
+<form action="results" method="POST">{% csrf_token %}
+    <input type="submit" value="Search By Task"/>
+    <input type="text" name="search_text"/>
+</form>

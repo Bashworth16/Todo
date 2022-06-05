@@ -1,64 +1,62 @@
-from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from .models import Todo
+from django.http import JsonResponse
 
 
-def task_list(request):
-    objects_list = Todo.objects.all()
-    context = {
-        'List': objects_list
-    }
-    return render(request, 'todos/index.html', context)
+@csrf_exempt
+def list_tasks(request):
+    return JsonResponse({
+        "items": list(Todo.objects.values()),
+    })
 
 
+@csrf_exempt
 def search(request):
-    search_text = request.POST.get('search_text')
-    results1 = ''
-    for jobs in Todo.objects.all():
-        if search_text == jobs.task:
-            results1 = jobs.task
-        else:
-            pass
-    context = {
-        'results': results1
-    }
-    return render(request, 'todos/results.html', context)
+    if request.method == 'GET':
+        s = request.GET.get('search_text')
+        results = ''
+        for task in Todo.objects.all():
+            if s == task.id:
+                results = task
+            else:
+                pass
+        return JsonResponse({
+            "items": list(Todo.objects.filter(results)),
+        })
+    else:
+        return JsonResponse({
+            "items": list(Todo.objects.filter()),
+        })
 
 
-def search_id(request):
-    search = request.POST.get('search_id')
-    results = ''
-    for jobs in Todo.objects.all():
-        if search == jobs.id:
-            results = jobs.task
-        else:
-            pass
-    context = {
-        'results': results
-    }
-    return render(request, 'todos/idresults.html', context)
-
-
+@csrf_exempt
 def add_task(request):
-    if request.method == 'POST':
+    if request.POST:
         new_task = Todo()
         new_task.task = request.POST.get('add_task')
         new_task.save()
-        return render(request, 'todos/add_task.html')
+        return JsonResponse({
+            "items": list(Todo.objects.values()),
+        })
     else:
-        return render(request, 'todos/add_task.html')
+        return JsonResponse({
+            "items": list(Todo.objects.values()),
+        })
 
 
+@csrf_exempt
 def remove_task(request, task_id):
     Todo.objects.filter(id=task_id).delete()
-    return render(request, 'todos/remove.html')
+    return JsonResponse({
+        "items": list(Todo.objects.values()),
+    })
 
 
-def update1(request, task_id):
-    return render(request, 'todos/update.html')
-
-
+@csrf_exempt
 def update_task(request, task_id):
     uptask = Todo.objects.get(id=task_id)
-    uptask.task = request.POST.get('text_update')
+    uptask.task = request.PUT.get('text_update')
     uptask.save()
-    return render(request, 'todos/update_task.html')
+    return JsonResponse({
+        "items": list(Todo.objects.all()),
+    })

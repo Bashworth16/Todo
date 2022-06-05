@@ -1,0 +1,23 @@
+<h1>To-Do List</h1>
+
+
+<ol>
+{% for task in List %}
+    <li id={{task.id}}>Task ID: {{task.id}}</li>
+    <li> Task: {{ task }}
+        <button onclick="location.href='tasks/{{task.id}}';">
+            Complete Task </button>
+        <button onclick="location.href='tasks/{{task.id}}';">
+            Update </button></li>
+{% endfor %}
+</ol>
+
+<form action="tasks" method="POST">
+    <input type="submit" value="Add Task"/>
+    <input type="text" name="add_task"/>
+</form>
+
+<form action="tasks" method="GET">
+    <input type="submit" value="ID Search"/>
+    <input type="text" name="search_text"/>
+</form>

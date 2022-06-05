@@ -12,7 +12,7 @@ def list_tasks(request):
 
 @csrf_exempt
 def search(request):
-    if request.method == 'GET':
+    if request.GET:
         s = request.GET.get('search_text')
         results = ''
         for task in Todo.objects.all():
@@ -46,17 +46,27 @@ def add_task(request):
 
 @csrf_exempt
 def remove_task(request, task_id):
-    Todo.objects.filter(id=task_id).delete()
-    return JsonResponse({
-        "items": list(Todo.objects.values()),
-    })
+    if request.method == 'DELETE':
+        Todo.objects.filter(id=task_id).delete()
+        return JsonResponse({
+            "items": list(Todo.objects.values()),
+        })
+    else:
+        return JsonResponse({
+            "items": list(Todo.objects.values()),
+        })
 
 
 @csrf_exempt
 def update_task(request, task_id):
-    uptask = Todo.objects.get(id=task_id)
-    uptask.task = request.PUT.get('text_update')
-    uptask.save()
-    return JsonResponse({
-        "items": list(Todo.objects.all()),
-    })
+    if request.PUT:
+        uptask = Todo.objects.get(id=task_id)
+        uptask.task = request.PUT.get('text_update')
+        uptask.save()
+        return JsonResponse({
+            "items": list(Todo.objects.all()),
+        })
+    else:
+        return JsonResponse({
+            "items": list(Todo.objects.all()),
+        })

@@ -3,9 +3,6 @@ from . import views
 
 
 urlpatterns = [
-    path('api/v1/tasks', views.list_tasks, name='list-task'),
-    path('api/v1/tasks', views.add_task, name='add'),
-    path('api/v1/tasks', views.search, name='get'),
-    path('api/v1/tasks/<int:task_id>', views.remove_task, name='remove'),
-    path('api/v1/tasks/{task-id}', views.update_task, name='update'),
+    path('api/v1/tasks', views.request_sort, name='index'),
+    path('api/v1/tasks/<int:task_id>', views.request_sort_with_id, name='id'),
 ]

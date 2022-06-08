@@ -1,8 +1,8 @@
 from django.urls import path
-from . import views
+from mysite.todo.api.v1 import *
 
 
 urlpatterns = [
-    path('api/v1/tasks', views.request_sort, name='index'),
-    path('api/v1/tasks/<int:task_id>', views.request_sort_with_id, name='id'),
+    path('api/v1/tasks', get_tasks, name='index'),
+    path('api/v1/tasks/<int:task_id>', get_task, name='id'),
 ]

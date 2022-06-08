@@ -1,7 +1,9 @@
-from mysite.todo.views import *
+from django.views.decorators.csrf import csrf_exempt
+from .views import get_task, get_tasks, post_task, put_task, delete_task
 from django.http import HttpResponseNotAllowed
 
 
+@csrf_exempt
 def request_tasks(request):
     if request.method == "GET":
         return get_tasks()
@@ -11,6 +13,7 @@ def request_tasks(request):
         return HttpResponseNotAllowed(['GET', 'POST'])
 
 
+@csrf_exempt
 def request_task(request, task_id):
     if request.method == "GET":
         return get_task(task_id)

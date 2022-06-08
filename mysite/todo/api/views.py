@@ -1,5 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
-from .models import Todo
+from mysite.todo.models import Todo
 from django.http import JsonResponse
 import json
 
@@ -15,8 +15,8 @@ def get_tasks():
 def post_task(request):
     new_task = Todo()
     task_text = request.body.decode('utf-8')
-    jtask = json.loads(task_text)
-    new_task.task = jtask.get('task')
+    j_task = json.loads(task_text)
+    new_task.task = j_task.get('task')
     new_task.save()
     return JsonResponse({
         "items": list(Todo.objects.values()),

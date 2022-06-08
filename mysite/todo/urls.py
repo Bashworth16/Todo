@@ -1,5 +1,5 @@
 from django.urls import path
-from .api.v1 import request_tasks, request_task
+from todo.api.v1 import request_tasks, request_task
 
 
 urlpatterns = [

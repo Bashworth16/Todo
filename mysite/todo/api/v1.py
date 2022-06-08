@@ -1,5 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
-from .views import get_task, get_tasks, post_task, put_task, delete_task
+from todo.models import Todo
+from django.http import JsonResponse
+import json
 from django.http import HttpResponseNotAllowed
 
 
@@ -23,3 +25,51 @@ def request_task(request, task_id):
         return put_task(request, task_id)
     else:
         return HttpResponseNotAllowed(['GET', 'DELETE', 'PUT'])
+
+
+@csrf_exempt
+def get_tasks():
+    return JsonResponse({
+        "items": list(Todo.objects.values()),
+    })
+
+
+@csrf_exempt
+def post_task(request):
+    new_task = Todo()
+    task_text = request.body.decode('utf-8')
+    j_task = json.loads(task_text)
+    new_task.task = j_task.get('task')
+    new_task.save()
+    return JsonResponse({
+        "items": list(Todo.objects.values()),
+    }, safe=True)
+
+
+@csrf_exempt
+def get_task(task_id):
+    return_task = Todo.objects.filter(id=task_id)
+    return JsonResponse({
+        "items": list(return_task.values()),
+    }, safe=True)
+
+
+@csrf_exempt
+def delete_task(task_id):
+    Todo.objects.filter(id=task_id).delete()
+    return JsonResponse({
+        "items": list(Todo.objects.values()),
+    })
+
+
+@csrf_exempt
+def put_task(request, task_id):
+    task_text = request.body.decode('utf-8')
+    j_task = json.loads(task_text)
+    update = Todo()
+    update.id = task_id
+    update.task = j_task.get('task')
+    update.save()
+    return JsonResponse({
+        "items": list(Todo.objects.values()),
+    }, safe=True)

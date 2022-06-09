@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from todo.models import Todo
 from django.http import JsonResponse
 import json
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed, HttpResponse
 
 
 @csrf_exempt
@@ -39,10 +39,16 @@ def post_task(request):
     new_task = Todo()
     task_text = request.body.decode('utf-8')
     j_task = json.loads(task_text)
+    print(type(j_task))
+    print(j_task.keys())
+    print(type(j_task.get('task')))
+    print(j_task.get('task'))
     new_task.task = j_task.get('task')
+    print(new_task.task)
+    print(type(new_task.task))
     new_task.save()
     return JsonResponse({
-        "items": list(Todo.objects.values()),
+        "items": j_task,
     }, safe=True)
 
 
@@ -50,16 +56,14 @@ def post_task(request):
 def get_task(task_id):
     return_task = Todo.objects.filter(id=task_id)
     return JsonResponse({
-        "items": list(return_task.values()),
+        "items": list(return_task),
     }, safe=True)
 
 
 @csrf_exempt
 def delete_task(task_id):
     Todo.objects.filter(id=task_id).delete()
-    return JsonResponse({
-        "items": list(Todo.objects.values()),
-    })
+    return HttpResponse()
 
 
 @csrf_exempt
@@ -70,6 +74,4 @@ def put_task(request, task_id):
     update.id = task_id
     update.task = j_task.get('task')
     update.save()
-    return JsonResponse({
-        "items": list(Todo.objects.values()),
-    }, safe=True)
+    return HttpResponse()

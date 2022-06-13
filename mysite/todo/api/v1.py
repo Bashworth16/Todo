@@ -2,6 +2,8 @@ from django.views.decorators.csrf import csrf_exempt
 from todo.models import Todo
 from django.http import JsonResponse
 import json
+# from django.core.serializers import serialize
+# from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponseNotAllowed, HttpResponse
 
 
@@ -39,16 +41,11 @@ def post_task(request):
     new_task = Todo()
     task_text = request.body.decode('utf-8')
     j_task = json.loads(task_text)
-    print(type(j_task))
-    print(j_task.keys())
-    print(type(j_task.get('task')))
-    print(j_task.get('task'))
     new_task.task = j_task.get('task')
-    print(new_task.task)
-    print(type(new_task.task))
     new_task.save()
     return JsonResponse({
-        "items": j_task,
+        'id': new_task.id,
+        'task': new_task.task
     }, safe=True)
 
 

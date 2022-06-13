@@ -2,8 +2,6 @@ from django.views.decorators.csrf import csrf_exempt
 from todo.models import Todo
 from django.http import JsonResponse
 import json
-# from django.core.serializers import serialize
-# from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponseNotAllowed, HttpResponse
 
 
@@ -14,7 +12,7 @@ def request_tasks(request):
     if request.method == "POST":
         return post_task(request)
     else:
-        return HttpResponseNotAllowed(['GET', 'POST'])
+        return HttpResponseNotAllowed(['GET', 'POST'], status=404)
 
 
 @csrf_exempt
@@ -26,7 +24,7 @@ def request_task(request, task_id):
     if request.method == "PUT":
         return put_task(request, task_id)
     else:
-        return HttpResponseNotAllowed(['GET', 'DELETE', 'PUT'])
+        return HttpResponseNotAllowed(['GET', 'DELETE', 'PUT'], status=404)
 
 
 @csrf_exempt
@@ -51,16 +49,17 @@ def post_task(request):
 
 @csrf_exempt
 def get_task(task_id):
-    return_task = Todo.objects.filter(id=task_id)
+    return_task = Todo.objects.get(id=task_id)
     return JsonResponse({
-        "items": list(return_task),
+        'id': task_id,
+        'task': return_task.task
     }, safe=True)
 
 
 @csrf_exempt
 def delete_task(task_id):
     Todo.objects.filter(id=task_id).delete()
-    return HttpResponse()
+    return HttpResponse(status=204)
 
 
 @csrf_exempt
@@ -71,4 +70,4 @@ def put_task(request, task_id):
     update.id = task_id
     update.task = j_task.get('task')
     update.save()
-    return HttpResponse()
+    return HttpResponse(status=204)

@@ -49,11 +49,16 @@ def post_task(request):
 
 @csrf_exempt
 def get_task(task_id):
-    return_task = Todo.objects.get(id=task_id)
-    return JsonResponse({
-        'id': task_id,
-        'task': return_task.task
-    }, safe=True)
+    return_task = list(Todo.objects.filter(id=task_id).values())
+    for val in return_task:
+        return_task = val
+    if return_task:
+        return JsonResponse({
+            'id': return_task.get('id'),
+            'task': return_task.get('task')
+        }, safe=True)
+    else:
+        return HttpResponse(status=404)
 
 
 @csrf_exempt

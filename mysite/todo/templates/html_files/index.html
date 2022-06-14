@@ -1,1 +1,23 @@
-<meta http-equiv="Refresh" content="0; url='http://127.0.0.1:8000/api/v1'" />
+<h1>To-Do List</h1>
+
+
+<ol>
+{% for task in List %}
+    <li id={{task.id}}>Task ID: {{task.id}}</li>
+    <li> Task: {{ task }}
+        <button onclick="location.href='api/v1/task/{{task.id}}';">
+            Complete Task </button>
+        <button onclick="location.href='api/v1/task/{{task.id}}';">
+            Update </button></li>
+{% endfor %}
+</ol>
+
+<form action="api/v1/tasks" method="POST">
+    <input type="submit" value="Add Task"/>
+    <input type="text" name="task_text"/>
+</form>
+
+<form action="api/v1/task/" method="GET">
+    <input type="submit" value="ID Search"/>
+    <input type="text" name="search_text"/>
+</form>

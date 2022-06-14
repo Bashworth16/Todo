@@ -56,7 +56,7 @@ def get_task(task_id):
         return JsonResponse({
             'id': return_task.get('id'),
             'task': return_task.get('task')
-        }, safe=True)
+        })
     else:
         return HttpResponse(status=404)
 

@@ -12,7 +12,7 @@ def request_tasks(request):
     if request.method == "POST":
         return post_task(request)
     else:
-        return HttpResponseNotAllowed(['GET', 'POST'], status=404)
+        return HttpResponseNotAllowed(['GET', 'POST'], status=405)
 
 
 @csrf_exempt
@@ -24,7 +24,7 @@ def request_task(request, task_id):
     if request.method == "PUT":
         return put_task(request, task_id)
     else:
-        return HttpResponseNotAllowed(['GET', 'DELETE', 'PUT'], status=404)
+        return HttpResponseNotAllowed(['GET', 'DELETE', 'PUT'], status=405)
 
 
 @csrf_exempt
@@ -69,10 +69,22 @@ def delete_task(task_id):
 
 @csrf_exempt
 def put_task(request, task_id):
-    task_text = request.body.decode('utf-8')
-    j_task = json.loads(task_text)
-    update = Todo()
-    update.id = task_id
-    update.task = j_task.get('task')
-    update.save()
-    return HttpResponse(status=204)
+    if json.loads(request.body.decode('utf-8')).get('task') is None:
+        return HttpResponse(status=400)
+    else:
+        pass
+
+    check_valid_task = list(Todo.objects.filter(id=task_id).values())
+    for val in check_valid_task:
+        check_valid_task = val
+        print(check_valid_task)
+    if check_valid_task:
+        task_text = request.body.decode('utf-8')
+        j_task = json.loads(task_text)
+        update = Todo()
+        update.id = task_id
+        update.task = j_task.get('task')
+        update.save()
+        return HttpResponse(status=204)
+    else:
+        return HttpResponse(status=404)

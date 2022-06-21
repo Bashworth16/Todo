@@ -1,23 +1,31 @@
-<h1>To-Do List</h1>
-
-
-<ol>
-{% for task in List %}
-    <li id={{task.id}}>Task ID: {{task.id}}</li>
-    <li> Task: {{ task }}
-        <button onclick="location.href='api/v1/task/{{task.id}}';">
-            Complete Task </button>
-        <button onclick="location.href='api/v1/task/{{task.id}}';">
-            Update </button></li>
-{% endfor %}
-</ol>
-
-<form action="api/v1/tasks" method="POST">
-    <input type="submit" value="Add Task"/>
-    <input type="text" name="task_text"/>
-</form>
-
-<form action="api/v1/task/" method="GET">
-    <input type="submit" value="ID Search"/>
-    <input type="text" name="search_text"/>
-</form>
+<html>
+<div>
+    <h1>To-do List</h1>
+</div>
+<body>
+<div id="tasks"></div>
+<script>
+    fetch('http://127.0.0.1:8000/api/v1/tasks')
+        .then(response => {
+            if (!response.ok) {
+                throw Error(`${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data.items);
+            const html = data.items.map(task => {
+                return `<p>ID: ${task.id}  ${task.task}
+                    <button onclick="location.href='api/v1/task/{{task.id}}';">
+                        Complete Task </button>
+                    <button onclick="location.href='api/v1/task/{{task.id}}';">
+                        Update </button></li></p>`}).join('')
+            console.log(html)
+            document.querySelector('#tasks').insertAdjacentHTML('afterbegin', html);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+</script>
+</body>
+</html>

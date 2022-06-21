@@ -3,7 +3,7 @@
     <h1>To-do List</h1>
 </div>
 <body>
-<div id="tasks"></div>
+<div id="tasks">
 <script>
     function loadList() {
         fetch('http://127.0.0.1:8000/api/v1/tasks')
@@ -26,7 +26,7 @@
             .catch(error => {
                 console.log(error);
             });
-        }
+        };
 
     function completeTask(id) {
         let url = 'http://127.0.0.1:8000/home'
@@ -36,8 +36,26 @@
                 });
     };
 
+    function postTask() {
+        fetch('http://127.0.0.1:8000/api/v1/tasks', {method: 'POST'})
+            .then(response => {
+                location.reload(true)
+                });
+    }
+
     loadList()
 </script>
-<div>POST TASK HERE</div>
+</div>
+
+<form action="api/v1/tasks" method="POST">
+    <input type="submit" value="Add Task"/>
+    <input type="text" name="new_task"/>
+</form>
+
+<form action="api/v1/task/" method="GET">
+    <input type="submit" value="ID Search"/>
+    <input type="text" name="search_text"/>
+</form>
+
 </body>
 </html>

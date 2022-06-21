@@ -16,7 +16,7 @@
             .then(data => {
                 console.log(data.items);
                 const html = data.items.map(task => {
-                    return `<p>ID: ${task.id}  ${task.task}
+                    return `<p id=${task.id}>ID: ${task.id}  ${task.task}
                         <button onclick= completeTask(${task.id})>
                             Complete Task </button>
                         <button onclick="location.href='api/v1/task/{{task.id}}';">
@@ -32,8 +32,9 @@
         let url = 'http://127.0.0.1:8000/home'
         fetch(`http://127.0.0.1:8000/api/v1/task/${id}`, {method: 'DELETE'})
             .then(response => {
-                location.reload(true)
-                });
+            const div = document.getElementById(id);
+            div.remove();
+            });
     };
 
     function postTask() {

@@ -5,27 +5,39 @@
 <body>
 <div id="tasks"></div>
 <script>
-    fetch('http://127.0.0.1:8000/api/v1/tasks')
-        .then(response => {
-            if (!response.ok) {
-                throw Error(`${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(data.items);
-            const html = data.items.map(task => {
-                return `<p>ID: ${task.id}  ${task.task}
-                    <button onclick="location.href='api/v1/task/{{task.id}}';">
-                        Complete Task </button>
-                    <button onclick="location.href='api/v1/task/{{task.id}}';">
-                        Update </button></li></p>`}).join('')
-            console.log(html)
-            document.querySelector('#tasks').insertAdjacentHTML('afterbegin', html);
-        })
-        .catch(error => {
-            console.log(error);
-        });
+    function loadList() {
+        fetch('http://127.0.0.1:8000/api/v1/tasks')
+            .then(response => {
+                if (!response.ok) {
+                    throw Error(`${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data.items);
+                const html = data.items.map(task => {
+                    return `<p>ID: ${task.id}  ${task.task}
+                        <button onclick= completeTask(${task.id})>
+                            Complete Task </button>
+                        <button onclick="location.href='api/v1/task/{{task.id}}';">
+                            Update </button></p>`}).join('')
+                document.querySelector('#tasks').insertAdjacentHTML('afterbegin', html);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }
+
+    function completeTask(id) {
+        let url = 'http://127.0.0.1:8000/home'
+        fetch(`http://127.0.0.1:8000/api/v1/task/${id}`, {method: 'DELETE'})
+            .then(response => {
+                location.reload(true)
+                });
+    };
+
+    loadList()
 </script>
+<div>POST TASK HERE</div>
 </body>
 </html>

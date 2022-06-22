@@ -14,7 +14,6 @@
                 return response.json();
             })
             .then(data => {
-                console.log(data.items);
                 const html = data.items.map(task => {
                     return `<p id=${task.id}>ID: ${task.id}  ${task.task}
                         <button onclick= completeTask(${task.id})>
@@ -35,23 +34,24 @@
             const div = document.getElementById(id);
             div.remove();
             });
-    };
+        };
 
-    function postTask() {
-        fetch('http://127.0.0.1:8000/api/v1/tasks', {method: 'POST'})
-            .then(response => {
-                location.reload(true)
-                });
-    }
+    function postTask(new_task) {
+        const newTask = new FormData();
+        newTask.append('task', new_task);
+        const data = JSON.stringify({'task': new_task})
+        fetch('api/v1/tasks', {
+            method: 'POST',
+            body: data});
+            }
 
     loadList()
 </script>
 </div>
 
-<form action="api/v1/tasks" method="POST">
-    <input type="submit" value="Add Task"/>
-    <input type="text" name="new_task"/>
-</form>
+<button type="submit" onclick=postTask(document.getElementById('new_task').value)>
+    Add Task </button>
+<input id="new_task" type="text" name="task_text"/>
 
 <form action="api/v1/task/" method="GET">
     <input type="submit" value="ID Search"/>

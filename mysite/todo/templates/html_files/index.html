@@ -37,6 +37,7 @@
         };
 
     function postTask(new_task) {
+        document.getElementById('new_task').value = ''
         const newTask = new FormData();
         newTask.append('task', new_task);
         const data = JSON.stringify({'task': new_task})

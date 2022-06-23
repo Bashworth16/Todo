@@ -42,9 +42,32 @@
         const data = JSON.stringify({'task': new_task})
         fetch('api/v1/tasks', {
             method: 'POST',
-            body: data});
-            }
+            body: data})
+            .then(response => {
+                if (!response.ok) {
+                    throw Error(`${response.status}`);
+                    }
+                return response.json();
+                })
+            .then(data => {
+                data = Object.keys(data).map(function(key)
+                    {return data[key]});
+                console.log(data)
+                const html = data.slice(0, 1).map(task => {
+                    return `<p id=${data[0]}>
+                        ID: ${data[0]} ${data[1]}
+                        <button onclick= completeTask(${data[0]})>
+                            Complete Task </button>
+                        <button onclick="location.href='api/v1/task/{{task.id}}';">
+                            Update </button>
+                        </p>`}).join('')
 
+                document.querySelector('#tasks').insertAdjacentHTML('beforeend', html);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        };
     loadList()
 </script>
 </div>

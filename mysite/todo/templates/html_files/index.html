@@ -1,12 +1,15 @@
 <html>
+
 <div>
     <h1>To-do List</h1>
 </div>
+
 <body>
 <div id="tasks">
 <script>
+    // Load task list to home screen
     function loadList() {
-        fetch('http://127.0.0.1:8000/api/v1/tasks')
+        fetch('api/v1/tasks')
             .then(response => {
                 if (!response.ok) {
                     throw Error(`${response.status}`);
@@ -18,7 +21,7 @@
                     return `<p id=${task.id}>ID: ${task.id}  ${task.task}
                         <button onclick= completeTask(${task.id})>
                             Complete Task </button>
-                        <button onclick="location.href='api/v1/task/{{task.id}}';">
+                        <button onclick=upDate(${task.id})>
                             Update </button></p>`}).join('')
                 document.querySelector('#tasks').insertAdjacentHTML('afterbegin', html);
             })
@@ -27,8 +30,9 @@
             });
         };
 
+    // Complete task
     function completeTask(id) {
-        let url = 'http://127.0.0.1:8000/home'
+        let url = 'home'
         fetch(`http://127.0.0.1:8000/api/v1/task/${id}`, {method: 'DELETE'})
             .then(response => {
             const div = document.getElementById(id);
@@ -36,6 +40,7 @@
             });
         };
 
+    // Post Task Feature
     function postTask(new_task) {
         document.getElementById('new_task').value = ''
         const newTask = new FormData();
@@ -59,7 +64,7 @@
                         ID: ${data[0]} ${data[1]}
                         <button onclick= completeTask(${data[0]})>
                             Complete Task </button>
-                        <button onclick="location.href='api/v1/task/{{task.id}}';">
+                        <button onclick=upDate(${data[0]})>
                             Update </button>
                         </p>`}).join('')
 
@@ -69,6 +74,29 @@
                 console.log(error);
             });
         };
+
+    // Submit function
+    function submit(text_box_val, id) {
+        fetch(`api/v1/task/${id}`, {
+            method: "PUT",
+            body: text_box.value
+        });
+        getElementById("txtBox").remove();
+        getElementById("submit").remove();
+        getElementById(id).value = text_box_val;
+    };
+
+    // Update Feature
+    function upDate(id) {
+        const update_item = document.getElementById(id);
+        const text_box = `<input id="txtBox" type="text" name="task_update"/>`;
+        const submitButton = `<button id="submit" type="submit" onclick=
+            submit(text_box.value, ${id})
+            > Submit </button>`;
+        const html = (text_box + submitButton);
+        document.getElementById(id).insertAdjacentHTML('beforeend', html);
+    };
+
     loadList()
 </script>
 </div>

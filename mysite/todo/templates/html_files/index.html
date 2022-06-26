@@ -1,5 +1,3 @@
-<html>
-
 <div>
     <h1>To-do List</h1>
 </div>
@@ -10,94 +8,102 @@
     // Load task list to home screen
     function loadList() {
         fetch('api/v1/tasks')
-            .then(response => {
-                if (!response.ok) {
-                    throw Error(`${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const html = data.items.map(task => {
-                    return `<p id=${task.id}>ID: ${task.id}  ${task.task}
-                        <button onclick= completeTask(${task.id})>
-                            Complete Task </button>
-                        <button onclick=upDate(${task.id})>
-                            Update </button></p>`}).join('')
-                document.querySelector('#tasks').insertAdjacentHTML('afterbegin', html);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-        };
+        .then(response => {
+            if (!response.ok) {
+            throw Error(`${response.status}`);
+            }
+        return response.json();
+        })
+        .then(data => {
+            const html = data.items.map(task => {
+                return `<p id=${task.id}>ID: ${task.id}  ${task.task}
+                    <button onclick= completeTask(${task.id})>
+                        Complete Task </button>
+                    <button onclick=upDate(${task.id})>
+                        Update </button></p>`;}).join('');
+            document.querySelector('#tasks').insertAdjacentHTML('afterbegin', html);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
 
     // Complete task
     function completeTask(id) {
-        let url = 'home'
-        fetch(`http://127.0.0.1:8000/api/v1/task/${id}`, {method: 'DELETE'})
-            .then(response => {
+        fetch(`http://127.0.0.1:8000/api/v1/task/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
             const div = document.getElementById(id);
             div.remove();
-            });
-        };
+            return console.log(`Response ${response} deleted.`);
+        });
+    }
 
     // Post Task Feature
     function postTask(new_task) {
-        document.getElementById('new_task').value = ''
         const newTask = new FormData();
         newTask.append('task', new_task);
-        const data = JSON.stringify({'task': new_task})
+        const data = JSON.stringify({'task': new_task});
+
         fetch('api/v1/tasks', {
             method: 'POST',
-            body: data})
-            .then(response => {
-                if (!response.ok) {
-                    throw Error(`${response.status}`);
-                    }
-                return response.json();
-                })
-            .then(data => {
-                data = Object.keys(data).map(function(key)
-                    {return data[key]});
-                console.log(data)
-                const html = data.slice(0, 1).map(task => {
-                    return `<p id=${data[0]}>
-                        ID: ${data[0]} ${data[1]}
+            body: data
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw Error(`${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            data = Object.keys(data)
+                .map(function(key)
+                    {return data[key];}
+                );
+            console.log(data);
+            const html = data.slice(0, 1).map(task => {
+                return `<p id=${data[0]}>
+                    ID: ${data[0]} ${data[1]}
                         <button onclick= completeTask(${data[0]})>
                             Complete Task </button>
                         <button onclick=upDate(${data[0]})>
-                            Update </button>
-                        </p>`}).join('')
+                            Update </button></p>`;
+            }).join('');
+        document.querySelector('#tasks').insertAdjacentHTML('beforeend', html);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+        document.getElementById('new_task').value = '';
+    }
 
-                document.querySelector('#tasks').insertAdjacentHTML('beforeend', html);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-        };
-
-    // Submit function
+      // Submit function
     function submit(text_box_val, id) {
+        console.log(text_box_val, id);
         fetch(`api/v1/task/${id}`, {
             method: "PUT",
-            body: text_box.value
+            body: text_box_val
         });
-        getElementById("txtBox").remove();
-        getElementById("submit").remove();
-        getElementById(id).value = text_box_val;
-    };
+        document.getElementById("txtBox").remove();
+        document.getElementById("submit").remove();
+        document.getElementById(id).value = text_box_val.task;
+    }
 
     // Update Feature
     function upDate(id) {
-        const update_item = document.getElementById(id);
+        console.log(id);
         const text_box = `<input id="txtBox" type="text" name="task_update"/>`;
-        const submitButton = `<button id="submit" type="submit" onclick=
-            submit(text_box.value, ${id})
-            > Submit </button>`;
+        const text_box_val = JSON.stringify({'task': text_box.value});
+        const submitButton = `<button id="submit" type="submit"
+            onclick= submit(${text_box_val}, ${id})>
+                Submit </button>`;
         const html = (text_box + submitButton);
         document.getElementById(id).insertAdjacentHTML('beforeend', html);
-    };
-
-    loadList()
+    }
+    console.log(upDate);
+    console.log(submit);
+    loadList();
 </script>
 </div>
 
@@ -111,4 +117,3 @@
 </form>
 
 </body>
-</html>

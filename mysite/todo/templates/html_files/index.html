@@ -63,8 +63,9 @@
                 );
             console.log(data);
             const html = data.slice(0, 1).map(task => {
+                const values = `ID: ${data[0]} ${data[1]}`
                 return `<p id=${data[0]}>
-                    ID: ${data[0]} ${data[1]}
+                    values
                         <button onclick= completeTask(${data[0]})>
                             Complete Task </button>
                         <button onclick=upDate(${data[0]})>
@@ -79,30 +80,32 @@
     }
 
       // Submit function
-    function submit(text_box_val, id) {
-        console.log(text_box_val, id);
+    function submit(id) {
+        const text = document.getElementById('txtBox').value;
+        const oldText = document.getElementById(`${id}`).innerHTML = `<p id=${id}>
+                    ID: ${id} ${text}
+                        <button onclick= completeTask(${id})>
+                            Complete Task </button>
+                        <button onclick=upDate(${id})>
+                            Update </button></p>`;
+        const text_box_val = JSON.stringify({'task': text});
         fetch(`api/v1/task/${id}`, {
             method: "PUT",
             body: text_box_val
         });
         document.getElementById("txtBox").remove();
         document.getElementById("submit").remove();
-        document.getElementById(id).value = text_box_val.task;
     }
 
     // Update Feature
     function upDate(id) {
         console.log(id);
         const text_box = `<input id="txtBox" type="text" name="task_update"/>`;
-        const text_box_val = JSON.stringify({'task': text_box.value});
-        const submitButton = `<button id="submit" type="submit"
-            onclick= submit(${text_box_val}, ${id})>
+        const submitButton = `<button id='submit' onclick=submit(${id})>
                 Submit </button>`;
         const html = (text_box + submitButton);
         document.getElementById(id).insertAdjacentHTML('beforeend', html);
     }
-    console.log(upDate);
-    console.log(submit);
     loadList();
 </script>
 </div>

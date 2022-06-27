@@ -106,17 +106,59 @@
         const html = (text_box + submitButton);
         document.getElementById(id).insertAdjacentHTML('beforeend', html);
     }
+
+    function clear() {
+        const sRs = document.getElementById('search_results');
+        console.log(sRs)};
+
+    function getTask(search) {
+        const html = '<div id="search_results"></div>';
+        document.getElementById('results').insertAdjacentHTML('beforeend', html);
+        console.log(document.getElementById('results').innerHTML)
+        fetch(`api/v1/task/${search}`, {
+            method: 'GET'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw Error(`${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            data = Object.keys(data)
+                    .map(function(key)
+                        {return data[key];}
+                    );
+            const html = data.slice(0, 1).map(task => {
+                return `<p id='search_result'>ID: ${data[0]}  ${data[1]}
+                    <button onclick= completeTask(${data[0]})>
+                        Complete Task </button>
+                    <button onclick=upDate(${data[0]})>
+                        Update </button>
+                    <button onclick=>
+                        Clear </button></p>`;}).join('');
+            document.querySelector('#search_results').insertAdjacentHTML('beforeend', html);
+        })
+        .catch(error => {
+            document.getElementById('results').value = 'No Results...';
+            console.log(error);
+        });
+        document.getElementById('search_task').value = '';
+    }
     loadList();
 </script>
 </div>
 
-<button type="submit" onclick=postTask(document.getElementById('new_task').value)>
-    Add Task </button>
-<input id="new_task" type="text" name="task_text"/>
-
-<form action="api/v1/task/" method="GET">
-    <input type="submit" value="ID Search"/>
-    <input type="text" name="search_text"/>
-</form>
-
+<div>
+    <button type="input" onclick=postTask(document.getElementById('new_task').value)>
+        Add Task </button>
+    <input id="new_task" type="text" name="task_text"/>
+</div>
+<div>
+    <button type="input" onclick=getTask(document.getElementById('search_task').value)>
+        Search ID </button>
+    <input id="search_task" type="text"/>
+</div>
+<p id="results"> Search Results:
+</p>
 </body>

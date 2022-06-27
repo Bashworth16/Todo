@@ -65,7 +65,7 @@
             const html = data.slice(0, 1).map(task => {
                 const values = `ID: ${data[0]} ${data[1]}`
                 return `<p id=${data[0]}>
-                    values
+                    ${values}
                         <button onclick= completeTask(${data[0]})>
                             Complete Task </button>
                         <button onclick=upDate(${data[0]})>

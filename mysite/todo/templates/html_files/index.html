@@ -19,7 +19,7 @@
                 return `<p id=${task.id}>ID: ${task.id}  ${task.task}
                     <button onclick= completeTask(${task.id})>
                         Complete Task </button>
-                    <button onclick=upDate(${task.id})>
+                    <button id=${task.id}button onclick=upDate(${task.id})>
                         Update </button></p>`;}).join('');
             document.querySelector('#tasks').insertAdjacentHTML('afterbegin', html);
         })
@@ -68,7 +68,7 @@
                     ${values}
                         <button onclick= completeTask(${data[0]})>
                             Complete Task </button>
-                        <button onclick=upDate(${data[0]})>
+                        <button id=${data[0]}button onclick=upDate(${id})>
                             Update </button></p>`;
             }).join('');
         document.querySelector('#tasks').insertAdjacentHTML('beforeend', html);
@@ -81,30 +81,63 @@
 
       // Submit function
     function submit(id) {
-        const text = document.getElementById('txtBox').value;
-        const oldText = document.getElementById(`${id}`).innerHTML = `<p id=${id}>
-                    ID: ${id} ${text}
-                        <button onclick= completeTask(${id})>
-                            Complete Task </button>
-                        <button onclick=upDate(${id})>
-                            Update </button></p>`;
-        const text_box_val = JSON.stringify({'task': text});
-        fetch(`api/v1/task/${id}`, {
-            method: "PUT",
-            body: text_box_val
-        });
-        document.getElementById("txtBox").remove();
-        document.getElementById("submit").remove();
+        document.getElementById(`${id}button`).disabled = false;
+        try {
+            document.getElementById(`${id}SButton`).disabled = false;
+            const text = document.getElementById('txtSBox').value;
+            const oldText = document.getElementById(`${id}`).innerHTML = `<p id=${id}>
+                ID: ${id} ${text}
+                    <button onclick= completeTask(${id})>
+                        Complete Task </button>
+                    <button id=${id}button onclick=upDate(${id})>
+                        Update </button></p>`;
+            const text_box_val = JSON.stringify({'task': text});
+            fetch(`api/v1/task/${id}`, {
+                method: "PUT",
+                body: text_box_val
+            });
+            document.getElementById("txtSBox").remove();
+            document.getElementById("sSubmit").remove();
+        }
+        catch {
+            console.log(`${id}SButton` + '' + 'Does not exist');
+            const text = document.getElementById('txtBox').value;
+            const oldText = document.getElementById(`${id}`).innerHTML = `<p id=${id}>
+                        ID: ${id} ${text}
+                            <button onclick= completeTask(${id})>
+                                Complete Task </button>
+                            <button id=${id}button onclick=upDate(${id})>
+                                Update </button></p>`;
+            const text_box_val = JSON.stringify({'task': text});
+            fetch(`api/v1/task/${id}`, {
+                method: "PUT",
+                body: text_box_val
+            });
+            document.getElementById("txtBox").remove();
+            document.getElementById("submit").remove();
+        }
     }
 
     // Update Feature
     function upDate(id) {
-        console.log(id);
-        const text_box = `<input id="txtBox" type="text" name="task_update"/>`;
-        const submitButton = `<button id='submit' onclick=submit(${id})>
-                Submit </button>`;
-        const html = (text_box + submitButton);
-        document.getElementById(id).insertAdjacentHTML('beforeend', html);
+        document.getElementById(`${id}button`).disabled = true;
+        try {
+            document.getElementById(`${id}SButton`).disabled = true;
+            const text_box = `<input id="txtSBox" type="text" name="task_update"/>`;
+            const submitButton = `<button id=sSubmit onclick=submit(${id})>
+                    Submit </button>`;
+            const html = (text_box + submitButton);
+            document.getElementById('results').insertAdjacentHTML('beforeend', html);
+        }
+        catch {
+            console.log(`${id}SButton` + 'Does not exist');
+            console.log(id);
+            const text_box = `<input id="txtBox" type="text" name="task_update"/>`;
+            const submitButton = `<button id=submit' onclick=submit(${id})>
+                    Submit </button>`;
+            const html = (text_box + submitButton);
+            document.getElementById(id).insertAdjacentHTML('beforeend', html);
+        }
     }
 
     function clear() {
@@ -112,9 +145,6 @@
         console.log(sRs)};
 
     function getTask(search) {
-        const html = '<div id="search_results"></div>';
-        document.getElementById('results').insertAdjacentHTML('beforeend', html);
-        console.log(document.getElementById('results').innerHTML)
         fetch(`api/v1/task/${search}`, {
             method: 'GET'
         })
@@ -133,14 +163,13 @@
                 return `<p id='search_result'>ID: ${data[0]}  ${data[1]}
                     <button onclick= completeTask(${data[0]})>
                         Complete Task </button>
-                    <button onclick=upDate(${data[0]})>
+                    <button id=${data[0]}SButton onclick=upDate(${data[0]})>
                         Update </button>
                     <button onclick=>
                         Clear </button></p>`;}).join('');
-            document.querySelector('#search_results').insertAdjacentHTML('beforeend', html);
+            document.querySelector('#results').insertAdjacentHTML('beforeend', html);
         })
         .catch(error => {
-            document.getElementById('results').value = 'No Results...';
             console.log(error);
         });
         document.getElementById('search_task').value = '';

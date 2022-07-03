@@ -1,8 +1,9 @@
 /* Calls get_tasks() function in api/v1 to generate a
    paragraph element containing "Complete Task", "Update", and "Task" buttons
    for each task in the database.*/
+
 function loadList() {
-    fetch('api/v1/tasks')
+    fetch('/api/v1/tasks')
     .then(response => {
         if (!response.ok) {
         throw Error(`${response.status}`);
@@ -23,14 +24,8 @@ function loadList() {
     });
 }
 
-/* Try clean(id) to check for search result element.
-   If successful, the paragraph element is removed from search results
-   and the task list.
-   Calls delete_task(id) in api/v1 and removes the
-   associated paragraph element to the task being removed.*/
-
 function completeTask(id) {
-    fetch(`api/v1/task/${id}`, {
+    fetch(`/api/v1/task/${id}`, {
         method: 'DELETE'
     })
     .then(response => {
@@ -51,7 +46,7 @@ function postTask(new_task) {
     newTask.append('task', new_task);
     const data = JSON.stringify({'task': new_task});
 
-    fetch('api/v1/tasks', {
+    fetch('/api/v1/tasks', {
         method: 'POST',
         body: data
     })
@@ -72,7 +67,7 @@ function postTask(new_task) {
                 ${values}
                     <button onclick= completeTask(${data[0]})>
                         Complete Task </button>
-                    <button id=${data[0]}button onclick=upDate(${data[0]})>
+                    <button id=${data[0]}update onclick=upDate(parentNode)>
                         Update </button></p>`;
         }).join('');
     document.querySelector('#tasks').insertAdjacentHTML('beforeend', html);
@@ -128,7 +123,7 @@ function submit(id) {
         };
     };
     const text_box_val = JSON.stringify({'task': text});
-    fetch(`api/v1/task/${id}`, {
+    fetch(`/api/v1/task/${id}`, {
         method: "PUT",
         body: text_box_val
     });
@@ -147,7 +142,7 @@ function clean(id) {
 
 
 function getTask(search) {
-    fetch(`api/v1/task/${search}`, {
+    fetch(`/api/v1/task/${search}`, {
         method: 'GET'
     })
     .then(response => {

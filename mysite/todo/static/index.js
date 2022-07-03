@@ -134,7 +134,7 @@ function clean(id) {
     const element = document.getElementById(id);
     const allParagraphs = document.querySelectorAll('p');
     for (const task of allParagraphs) {
-        if (task.getAttribute('name')) {
+        if (task.getAttribute('name') == `${id}search`) {
             task.remove();
         };
     };
